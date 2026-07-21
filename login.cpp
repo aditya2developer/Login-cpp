@@ -20,7 +20,7 @@ public:
     void signUp();
     void forgot();
     void showHeader(const string &title);
-    void showMenu();
+    void showLoginPage();
     void showMessage(const string &message, int color);
     void clearScreen();
     void pauseAndContinue();
@@ -56,22 +56,26 @@ void temp::pauseAndContinue() {
     cin.get();
 }
 
-void temp::showMenu() {
+void temp::showLoginPage() {
     clearScreen();
-    showHeader("WELCOME TO LOGIN SYSTEM");
-    cout << "\n";
-    cout << "  [1] Login\n";
-    cout << "  [2] Sign Up\n";
-    cout << "  [3] Forgot Password\n";
-    cout << "  [4] Exit\n";
-    cout << "\nEnter your choice: ";
+    cout << "\n====================================================\n";
+    cout << "|                 WELCOME BACK                     |\n";
+    cout << "|            Secure Login Portal                  |\n";
+    cout << "====================================================\n";
+    cout << "| Username :                                      |\n";
+    cout << "| Password :                                      |\n";
+    cout << "====================================================\n";
+    cout << "| [1] Login      [2] Sign Up      [3] Forgot      |\n";
+    cout << "| [4] Exit                                        |\n";
+    cout << "====================================================\n";
+    cout << "\nChoose an option: ";
 }
 
 int main() {
     char choice;
 
     while (true) {
-        obj.showMenu();
+        obj.showLoginPage();
         cin >> choice;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
