@@ -1,0 +1,3 @@
+*aditya123*12345
+*cd "c:\Users\Aditya Kr Singh\OneDrive\Desktop\Login-cpp\" ; if ($?) { g++ login.cpp -o login } ; if ($?) { .\login }*cd "c:\Users\Aditya Kr Singh\OneDrive\Desktop\Login-cpp\" ; if ($?) { g++ login.cpp -o login } ; if ($?) { .\login }
+aditya123*aditya123@gmail.com*12345
