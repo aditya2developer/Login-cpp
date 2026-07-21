@@ -1,120 +1,187 @@
-#include<iostream>
-#include<fstream>
-#include<string>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <string>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
 
-
-class temp{
-    string userName,Email,password;
-    string searchName,searchPass,searchEmail;
+class temp {
+    string userName, Email, password;
+    string searchName, searchPass, searchEmail;
     fstream file;
-    public:
+
+public:
     void login();
     void signUp();
-    void forgot(); 
-}obj;
+    void forgot();
+    void showHeader(const string &title);
+    void showMenu();
+    void showMessage(const string &message, int color);
+    void clearScreen();
+    void pauseAndContinue();
+} obj;
 
-int main(){
+void temp::clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void temp::showHeader(const string &title) {
+    cout << "\n====================================================\n";
+    cout << "                    " << title << "\n";
+    cout << "====================================================\n";
+}
+
+void temp::showMessage(const string &message, int color) {
+#ifdef _WIN32
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+    cout << message << endl;
+    SetConsoleTextAttribute(hConsole, 7);
+#else
+    cout << message << endl;
+#endif
+}
+
+void temp::pauseAndContinue() {
+    cout << "\nPress Enter to continue...";
+    cin.get();
+}
+
+void temp::showMenu() {
+    clearScreen();
+    showHeader("WELCOME TO LOGIN SYSTEM");
+    cout << "\n";
+    cout << "  [1] Login\n";
+    cout << "  [2] Sign Up\n";
+    cout << "  [3] Forgot Password\n";
+    cout << "  [4] Exit\n";
+    cout << "\nEnter your choice: ";
+}
+
+int main() {
     char choice;
-    cout<<"\n1- Login";
-    cout<<"\n2- Sign-up";
-    cout<<"\n3- Forget Password";
-    cout<<"\n4- Exit";
-    cout<<"\nEnter Your Choice :: ";
-    cin>>choice;
-    cin.ignore();
-    
-    switch(choice){
+
+    while (true) {
+        obj.showMenu();
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        switch (choice) {
         case '1':
             obj.login();
-        break;
-        
+            break;
+
         case '2':
             obj.signUp();
-        break;
-        
+            break;
+
         case '3':
             obj.forgot();
-        break;
+            break;
 
         case '4':
+            obj.showMessage("\nThank you for using the system. Goodbye!", 10);
             return 0;
-        break;
 
         default:
-            cout<<"Invalid Selection...!";
-
-    }
-
-}
-void temp :: signUp(){
-    cout<<"\nEnter Your User Name :: ";
-    getline(cin,userName);
-    cout<<"\nEnter Your Email Address :: ";
-    getline(cin,Email);
-    cout<<"\nEnter Password :: ";
-    getline(cin,password);
-
-    file.open("loginData.txt",ios :: out | ios :: app);
-    file<<userName<<"*"<<Email<<"*"<<password<<endl;
-    file.close();
-    
-}
-
-void temp :: login(){
-    cout<<"----------Login----------"<<endl; 
-    cout<<"\nEnter Your User Name :: "<<endl;
-    getline(cin,searchName);
-    cout<<"\nEnter Your Password :: "<<endl;
-    getline(cin,searchPass);
-
-    file.open("loginData.txt",ios :: in);
-    getline(file,userName,'*');
-    getline(file,Email,'*');
-    getline(file,password,'\n');
-    
-    while(!file.eof()){
-        if(userName==searchName){
-            if(password==searchPass){
-                cout<<"\nAccount Login Successful...!";
-                cout<<"\nUsername :: "<<userName<<endl;
-                cout<<"\nEmail :: "<<Email<<endl;
-            }else{
-                cout<<"\nPassword is Incorrect...!";
-            }
+            obj.showMessage("\nInvalid selection. Please try again.", 12);
+            obj.pauseAndContinue();
         }
-    getline(file,userName,'*');
-    getline(file,Email,'*');
-    getline(file,password,'\n');
     }
-    file.close();
 }
 
-void temp :: forgot(){
-    cout<<"\nEnter Your userName :: ";
-    getline(cin,searchName);
-    cout<<"\nEnter Your Email Address :: ";
-    getline(cin,searchEmail);
+void temp::signUp() {
+    clearScreen();
+    showHeader("SIGN UP");
+    cout << "\nEnter your username: ";
+    getline(cin, userName);
+    cout << "Enter your email address: ";
+    getline(cin, Email);
+    cout << "Enter password: ";
+    getline(cin, password);
 
-    file.open("loginData.txt",ios :: in);
-    // getline(file,userName,'*');
-    // getline(file,Email,'*');
-    // getline(file,password,'*');
+    file.open("loginData.txt", ios::out | ios::app);
+    file << userName << "*" << Email << "*" << password << endl;
+    file.close();
 
-    while (getline(file, userName, '*'))
-{
+    showMessage("\nAccount created successfully!", 10);
+    pauseAndContinue();
+}
+
+void temp::login() {
+    clearScreen();
+    showHeader("LOGIN");
+    cout << "\nEnter your username: ";
+    getline(cin, searchName);
+    cout << "Enter your password: ";
+    getline(cin, searchPass);
+
+    file.open("loginData.txt", ios::in);
+    getline(file, userName, '*');
     getline(file, Email, '*');
-    getline(file, password);
-        if(userName==searchName){
-            if(Email==searchEmail){
-                cout<<"\nAccount Found...!"<<endl;
-                cout<<"Your Password :: "<<password<<endl;
-                file.close();
-                return;
+    getline(file, password, '\n');
+
+    bool found = false;
+    while (!file.eof()) {
+        if (userName == searchName) {
+            found = true;
+            if (password == searchPass) {
+                showMessage("\nAccount login successful!", 10);
+                cout << "Username : " << userName << endl;
+                cout << "Email    : " << Email << endl;
+            } else {
+                showMessage("\nPassword is incorrect!", 12);
             }
+            break;
         }
-    
-}
-cout<<"Not Found...!\n";
+        getline(file, userName, '*');
+        getline(file, Email, '*');
+        getline(file, password, '\n');
+    }
+
+    if (!found) {
+        showMessage("\nUser not found!", 12);
+    }
+
     file.close();
+    pauseAndContinue();
+}
+
+void temp::forgot() {
+    clearScreen();
+    showHeader("FORGOT PASSWORD");
+    cout << "\nEnter your username: ";
+    getline(cin, searchName);
+    cout << "Enter your email address: ";
+    getline(cin, searchEmail);
+
+    file.open("loginData.txt", ios::in);
+
+    bool found = false;
+    while (getline(file, userName, '*')) {
+        getline(file, Email, '*');
+        getline(file, password);
+        if (userName == searchName && Email == searchEmail) {
+            found = true;
+            cout << "\nAccount found!" << endl;
+            cout << "Your password: " << password << endl;
+            break;
+        }
+    }
+
+    if (!found) {
+        showMessage("\nAccount not found!", 12);
+    }
+
+    file.close();
+    pauseAndContinue();
 }
