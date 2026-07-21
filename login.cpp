@@ -97,21 +97,24 @@ void temp :: forgot(){
     getline(cin,searchEmail);
 
     file.open("loginData.txt",ios :: in);
-    getline(file,userName,'*');
-    getline(file,Email,'*');
-    getline(file,password,'*');
+    // getline(file,userName,'*');
+    // getline(file,Email,'*');
+    // getline(file,password,'*');
 
-    while(!file.eof()){
+    while (getline(file, userName, '*'))
+{
+    getline(file, Email, '*');
+    getline(file, password);
         if(userName==searchName){
             if(Email==searchEmail){
                 cout<<"\nAccount Found...!"<<endl;
                 cout<<"Your Password :: "<<password<<endl;
-            }else{
-                cout<<"Not Found...!\n";
+                file.close();
+                return;
             }
-        }else{
-            cout<<"Not Found...!\n";
         }
-    }
+    
+}
+cout<<"Not Found...!\n";
     file.close();
 }
